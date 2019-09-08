@@ -21,8 +21,6 @@ class Ui_Dialog(object):
         self.pushButton.setGeometry(QtCore.QRect(300, 200, 80, 22))
         self.pushButton.setObjectName("pushButton")
 
-
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -30,10 +28,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.pushButton.setText(_translate("Dialog", "file"))
-        self.pushButton.clicked.connect(self.button_pressed)
 
-    def button_pressed(self):
-        print('Button pressed')
 
 if __name__ == "__main__":
     import sys
@@ -43,5 +38,3 @@ if __name__ == "__main__":
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
-    
-    print('file ended')
