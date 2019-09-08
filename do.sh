@@ -1,1 +1,6 @@
-python -m PyQt5.uic.pyuic -x app_01.ui -o app.py && python app.py
+#!/bin/bash
+
+file=$1
+name="${file%.*}"
+python -m PyQt5.uic.pyuic -x $file -o "$name.py"
+python "$name.py"
