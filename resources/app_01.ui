@@ -160,6 +160,19 @@ dfsdf
 </string>
              </property>
             </widget>
+            <widget class="QLabel" name="label">
+             <property name="geometry">
+              <rect>
+               <x>170</x>
+               <y>123</y>
+               <width>251</width>
+               <height>71</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+            </widget>
            </widget>
           </item>
          </layout>

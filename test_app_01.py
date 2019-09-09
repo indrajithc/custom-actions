@@ -153,7 +153,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.inside_02)
         self.plainTextEdit.setObjectName("outputArea") 
-        self.plainTextEdit.setPlainText("plainTextEdit") 
+        self.plainTextEdit.setPlainText("") 
         self.plainTextEdit.setReadOnly(True)
         
         
@@ -179,6 +179,8 @@ class Ui_Dialog(QtWidgets.QWidget):
 
     def pictureDropped(self, l):
         print(l)
+        for each in l :
+            self.plainTextEdit.setPlainText( self.plainTextEdit.toPlainText() + "\n" + each ) 
 
  
     # trigger when window size is changed, updateing all responsive widgets 
