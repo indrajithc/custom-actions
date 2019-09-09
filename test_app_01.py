@@ -2,6 +2,10 @@ import random
 from PyQt5 import QtCore, QtGui, QtWidgets
 from tinydb import TinyDB, Query
 import json
+import ntpath
+import threading
+import subprocess
+
 
 
 
@@ -28,6 +32,7 @@ class Tab02(QtWidgets.QWidget):
  
         self.setObjectName("tab02")
 
+
  
 
 
@@ -35,11 +40,85 @@ class Tab02(QtWidgets.QWidget):
     def responsive_init (self, super, event):
         test = 0
 
+
+
+
+
+# file list and dir operations
+class ListDirFiles () :
+    def __init__( self, input ):
+        
+        self.fulllist = []
+        self.input  = input
+        self.listFiles() 
+        
+    def getFiles (self):
+        try: 
+            if isinstance( self.fulllist , list):
+                return self.fulllist
+            else:
+                return []   
+        except:
+            pass
+
+        return []
+
+
+    def folderExist (self, path ) :
+        try:
+            return os.path.exists( path )
+        except:
+            return False
+
+    def fileExist (self, path ) :
+        try:
+            return os.path.isfile( path )
+        except:
+            return False
+
+    def listAllFiles ( self, file):
+        tmplist = []
+        try:
+
+            if self.folderExist( file ):
+                for root, dirs, files in os.walk( file ):
+                    for file in files:
+                        tmplist.append( os.path.join(root, file)  )
+
+        except : 
+            pass
+
+        return tmplist
+
+    def listFiles (self ):
+        try:
+            input  = self.input
+
+            if os.path.isdir( input ):   
+                if self.folderExist( input ): 
+                    listifles = self.listAllFiles( input )
+                    if len(listifles) > 0 :
+                        self.fulllist.extend( listifles ) 
+
+            elif os.path.isfile( input):  
+                if self.fileExist( input ):
+                    self.fulllist.append( input ) 
+            else:  
+                print( input + " is a special file (socket, FIFO, device file)" )
+               
+
+
+        except Exception as e: 
+            pass 
+
+
 #  class tab one
 class Tab01(QtWidgets.QWidget):
     def __init__(self, type, parent=None):
         super(Tab01, self).__init__(parent)
          
+
+        self.files_list = []
 
         self.setObjectName("tab01")
  
@@ -47,7 +126,7 @@ class Tab01(QtWidgets.QWidget):
         self.inActionTab01.setObjectName("inActionTab01")
 
         self.inTab01Layout = QtWidgets.QHBoxLayout(self.inActionTab01)
-        self.inTab01Layout.setContentsMargins(0, 0, 0, 0)
+        self.inTab01Layout.setContentsMargins(5, 5, 5, 5)
         self.inTab01Layout.setObjectName("inTab01Layout")
 
 
@@ -59,12 +138,74 @@ class Tab01(QtWidgets.QWidget):
 
         self.dropZone = DropComponent( self.inside_01, self.pictureDropped )
 
-        self.inTab01LayoutIn = QtWidgets.QHBoxLayout(self.inside_01)
+        self.inTab01LayoutIn = QtWidgets.QVBoxLayout(self.inside_01)
         self.inTab01LayoutIn.setContentsMargins(0, 0, 0, 0)
-        self.inTab01LayoutIn.setObjectName("inTab01LayoutIn")
-        
-        # self.connect(self.dropZone, QtCore.SIGNAL("dropped"), self.pictureDropped)
+        self.inTab01LayoutIn.setObjectName("inTab01LayoutIn") 
         self.inTab01LayoutIn.addWidget(self.dropZone)
+
+
+
+        self.inside_011 = QtWidgets.QWidget(self.inActionTab01)
+        self.inside_011.setObjectName("tab1_shred_div")  
+        self.inside_011.setMaximumSize(QtCore.QSize(16777215, 25)) 
+        self.inTab01LayoutIn.addWidget(self.inside_011)
+
+
+        self.buttonConta = QtWidgets.QHBoxLayout(self.inside_011)
+        self.buttonConta.setContentsMargins(0, 0, 0, 0)
+        self.buttonConta.setObjectName("buttonConta")   
+        # self.inside_02.addWidget(self.buttonConta)
+
+                
+        #  button ===================== 01
+        self.pushButton01 = QtWidgets.QPushButton(self.inside_011)
+        self.pushButton01.setObjectName("pushButton01") 
+        self.pushButton01.setMaximumSize(70, 25)
+        self.pushButton01.setText(" clear ") 
+        self.pushButton01.clicked.connect(self.event_clicked_button01)  
+        self.buttonConta.addWidget(self.pushButton01)
+        # ======================================================== end 01
+        
+        #  button ===================== 02
+        self.pushButton02 = QtWidgets.QPushButton(self.inside_011)
+        self.pushButton02.setObjectName("pushButton02") 
+        self.pushButton02.setMaximumSize(70, 25)
+        self.pushButton02.setText(" full path ") 
+        self.pushButton02.clicked.connect(self.event_clicked_button02)  
+        self.buttonConta.addWidget(self.pushButton02)
+        # ======================================================== end 02
+ 
+        #  button ===================== 03
+        self.pushButton03 = QtWidgets.QPushButton(self.inside_011)
+        self.pushButton03.setObjectName("pushButton03") 
+        self.pushButton03.setMaximumSize(70, 25)
+        self.pushButton03.setText(" file name ") 
+        self.pushButton03.clicked.connect(self.event_clicked_button03)  
+        self.buttonConta.addWidget(self.pushButton03)
+        # ======================================================== end 03
+  
+        #  button ===================== 04
+        self.pushButton04 = QtWidgets.QPushButton(self.inside_011)
+        self.pushButton04.setObjectName("pushButton04") 
+        self.pushButton04.setMaximumSize(70, 25)
+        self.pushButton04.setText(" is exist ") 
+        self.pushButton04.clicked.connect(self.event_clicked_button04)  
+        self.buttonConta.addWidget(self.pushButton04)
+        # ======================================================== end 04
+ 
+        
+ 
+   
+ 
+        
+ 
+        # setting menu items arrange ===> margin-right auto adjest
+        self.qLabel = QtWidgets.QLabel(self.inside_011)
+        self.qLabel.setObjectName("res_event")
+        self.buttonConta.addWidget(self.qLabel)
+
+
+
 
 
         self.inside_02 = QtWidgets.QWidget(self.inActionTab01)
@@ -73,19 +214,130 @@ class Tab01(QtWidgets.QWidget):
 
 
 
+
+
+
+
+
+
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.inside_02)
         self.plainTextEdit.setObjectName("outputArea") 
         self.plainTextEdit.setPlainText("") 
         self.plainTextEdit.setReadOnly(True)
 
+        self.inTab02LayoutIn = QtWidgets.QVBoxLayout(self.inside_02)
+        self.inTab02LayoutIn.setContentsMargins(0, 0, 0, 0)
+        self.inTab02LayoutIn.setObjectName("inTab02LayoutIn") 
+
+
+
+        self.inside_021 = QtWidgets.QWidget(self.inActionTab01)
+        self.inside_021.setObjectName("tab2_shred_div")  
+        self.inside_021.setMaximumSize(QtCore.QSize(16777215, 30)) 
+
+        self.inTab02LayoutIn.addWidget(self.inside_021)
+
+        self.inTab02LayoutIn.addWidget(self.plainTextEdit)
+
+        self.buttonContb = QtWidgets.QHBoxLayout(self.inside_021)
+        self.buttonContb.setContentsMargins(0, 0, 0, 0)
+        self.buttonContb.setObjectName("buttonContb")   
+        # self.inside_02.addWidget(self.buttonContb)
+
+                 
+        #  checkbox ===================== 01
+        self.checkBox01 = QtWidgets.QCheckBox( self.inside_021) 
+        self.checkBox01.setObjectName("pushButton11") 
+        self.checkBox01.setMaximumSize(70, 25)
+        self.checkBox01.setText(" Start ")  
+        self.checkBox01.stateChanged.connect(self.event_clicked_checkbox11)
+        self.buttonContb.addWidget(self.checkBox01)
+        # ======================================================== end 01
+
+
+
+        # setting menu items arrange ===> margin-right auto adjest
+        self.qLabel2 = QtWidgets.QLabel(self.inside_021)
+        self.qLabel2.setObjectName("res_event")
+        self.buttonContb.addWidget(self.qLabel2)
+
+
+
+
+    def thread_function(self, name):
+        vto = self.files_list 
+        listDirFiles = ListDirFiles("") 
+        for each in vto:
+            if listDirFiles.fileExist( each ):
+                if self.checkBox01.isChecked(): 
+                    # os.system("xfce4-terminal -e ' shred -vuz * \""+ each +"\"'")
+                    
+                    
+                    vero = subprocess.run(["shred", "-vuz",  each], capture_output=True)
+                    print(vero)
+                    print("file processed - [" + each + "]")
+
+        print ( " process exited ")
+        self.exitFilter()
+
+
+
+
+    def event_clicked_checkbox11(self, state):  
+        if state == QtCore.Qt.Checked:
+            x = threading.Thread(target=self.thread_function, args=( True,)) 
+            x.start()
+        else:
+            print('Unchecked')
+            # self.checkBox01.setChecked( True)
+ 
+
+    def event_clicked_button04(self):  
+       self.exitFilter()
+
+    def event_clicked_button03(self):  
+        vto = self.files_list 
+        new_v = []
+        for each in vto:
+            new_v.append( ntpath.basename( each ))
+        self.updateOutput(new_v )
+
+    def event_clicked_button02(self):  
+        self.updateOutput( self.files_list )
+
+    def event_clicked_button01(self):
+        self.files_list = []            
+        self.updateOutput( [] )
+    
+
+
+    def exitFilter ( self ):
+        vto = self.files_list 
+        listDirFiles = ListDirFiles("")
+        new_v = []
+        for each in vto:
+            if listDirFiles.fileExist( each ):
+                new_v.append(  each  )
+        self.files_list = new_v
+        self.updateOutput(new_v )
+
+
+    def updateOutput ( self, files_list ) : 
+        self.plainTextEdit.setPlainText("")
+        for index, each in  enumerate(files_list) : 
+            self.plainTextEdit.setPlainText( self.plainTextEdit.toPlainText() + "\n" + "[" + str( index + 1 ) + "]" + each ) 
 
 
 
     def pictureDropped(self, l):
         print(l)
         for each in l :
-            self.plainTextEdit.setPlainText( self.plainTextEdit.toPlainText() + "\n" + each ) 
-
+            listDirFiles = ListDirFiles( each ) 
+            for eachIn in listDirFiles.getFiles() :
+                if not( eachIn in self.files_list): 
+                    self.files_list.append( eachIn )
+            
+        self.updateOutput( self.files_list )
  
 
 
@@ -96,10 +348,11 @@ class Tab01(QtWidgets.QWidget):
         self.inTab01Layout.setGeometry(QtCore.QRect( 0, 0,  self.inActionTab01.width(), self.inActionTab01.height()  ))
         self.plainTextEdit.setGeometry(QtCore.QRect( 0, -1,  self.inside_02.width(), self.inside_02.height()  ))
         
-
-
-
-
+        self.buttonConta.setGeometry(QtCore.QRect( 0, -1,  self.inside_011.width(), self.inside_011.height()  ))
+        self.buttonContb.setGeometry(QtCore.QRect( 0, -1,  self.inside_021.width(), self.inside_021.height()  ))
+        
+        self.inside_02.setMaximumSize(self.width() /2 , self.height())
+ 
 #  for drag event component 
 class DropComponent(QtWidgets.QLabel): 
     def __init__(self, type, supera, parent=None):
