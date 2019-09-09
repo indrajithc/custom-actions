@@ -15,6 +15,87 @@ DB_PATH = "./data/db"
 
 
 
+#  class tab one
+class Tab02(QtWidgets.QWidget):
+    def __init__(self, type, parent=None):
+        super(Tab02, self).__init__(parent)
+        
+
+        color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
+        self.setStyleSheet("background-color: {}".format(color.name()))
+
+
+ 
+        self.setObjectName("tab02")
+
+ 
+
+
+
+    def responsive_init (self, super, event):
+        test = 0
+
+#  class tab one
+class Tab01(QtWidgets.QWidget):
+    def __init__(self, type, parent=None):
+        super(Tab01, self).__init__(parent)
+         
+
+        self.setObjectName("tab01")
+ 
+        self.inActionTab01 = QtWidgets.QWidget(self)
+        self.inActionTab01.setObjectName("inActionTab01")
+
+        self.inTab01Layout = QtWidgets.QHBoxLayout(self.inActionTab01)
+        self.inTab01Layout.setContentsMargins(0, 0, 0, 0)
+        self.inTab01Layout.setObjectName("inTab01Layout")
+
+
+        self.inside_01 = QtWidgets.QWidget(self.inActionTab01)
+        self.inside_01.setObjectName("inside_01") 
+
+        self.inTab01Layout.addWidget(self.inside_01)
+
+
+        self.dropZone = DropComponent( self.inside_01, self.pictureDropped )
+
+        self.inTab01LayoutIn = QtWidgets.QHBoxLayout(self.inside_01)
+        self.inTab01LayoutIn.setContentsMargins(0, 0, 0, 0)
+        self.inTab01LayoutIn.setObjectName("inTab01LayoutIn")
+        
+        # self.connect(self.dropZone, QtCore.SIGNAL("dropped"), self.pictureDropped)
+        self.inTab01LayoutIn.addWidget(self.dropZone)
+
+
+        self.inside_02 = QtWidgets.QWidget(self.inActionTab01)
+        self.inside_02.setObjectName("inside_02")
+        self.inTab01Layout.addWidget(self.inside_02)
+
+
+
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.inside_02)
+        self.plainTextEdit.setObjectName("outputArea") 
+        self.plainTextEdit.setPlainText("") 
+        self.plainTextEdit.setReadOnly(True)
+
+
+
+
+    def pictureDropped(self, l):
+        print(l)
+        for each in l :
+            self.plainTextEdit.setPlainText( self.plainTextEdit.toPlainText() + "\n" + each ) 
+
+ 
+
+
+
+    def responsive_init (self, super, event):
+        self.inActionTab01.setGeometry(QtCore.QRect( 0, 0,  self.width(), self.height()  ))
+        
+        self.inTab01Layout.setGeometry(QtCore.QRect( 0, 0,  self.inActionTab01.width(), self.inActionTab01.height()  ))
+        self.plainTextEdit.setGeometry(QtCore.QRect( 0, -1,  self.inside_02.width(), self.inside_02.height()  ))
+        
 
 
 
@@ -27,9 +108,7 @@ class DropComponent(QtWidgets.QLabel):
 
         color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
         self.setStyleSheet("background-color: {}".format(color.name()))
- 
-        self.setMinimumSize(10, 10)
-        self.setGeometry(QtCore.QRect( 0, 0, 20, 20))
+  
 
         self.setAcceptDrops(True)
         
@@ -118,54 +197,22 @@ class Ui_Dialog(QtWidgets.QWidget):
         self.mainContentTab = QtWidgets.QTabWidget(self.widget_2)
 
         self.mainContentTab.setObjectName("mainContentTab")
-        self.tab01 = QtWidgets.QWidget()
-        self.tab01.setObjectName("tab01")
-        
-        self.inActionTab01 = QtWidgets.QWidget(self.tab01)
-        self.inActionTab01.setObjectName("inActionTab01")
-
-        self.inTab01Layout = QtWidgets.QHBoxLayout(self.inActionTab01)
-        self.inTab01Layout.setContentsMargins(0, 0, 0, 0)
-        self.inTab01Layout.setObjectName("inTab01Layout")
 
 
-        self.inside_01 = QtWidgets.QWidget(self.inActionTab01)
-        self.inside_01.setObjectName("inside_01") 
-
-        self.inTab01Layout.addWidget(self.inside_01)
-
-
-        self.dropZone = DropComponent( self.inside_01, self.pictureDropped )
-
-        self.inTab01LayoutIn = QtWidgets.QHBoxLayout(self.inside_01)
-        self.inTab01LayoutIn.setContentsMargins(0, 0, 0, 0)
-        self.inTab01LayoutIn.setObjectName("inTab01LayoutIn")
-        
-        # self.connect(self.dropZone, QtCore.SIGNAL("dropped"), self.pictureDropped)
-        self.inTab01LayoutIn.addWidget(self.dropZone)
-
-
-        self.inside_02 = QtWidgets.QWidget(self.inActionTab01)
-        self.inside_02.setObjectName("inside_02")
-        self.inTab01Layout.addWidget(self.inside_02)
-
-
-
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.inside_02)
-        self.plainTextEdit.setObjectName("outputArea") 
-        self.plainTextEdit.setPlainText("") 
-        self.plainTextEdit.setReadOnly(True)
-        
-        
-
-
-
+        self.tab01 = Tab01( self )  
         self.mainContentTab.addTab(self.tab01, "action 1")
 
 
-        self.tab02 = QtWidgets.QWidget()
-        self.tab02.setObjectName("tab02")
+
+
+        self.tab02 = Tab02( self )  
         self.mainContentTab.addTab(self.tab02, "action 2")
+
+
+
+
+
+
  
         
         lay.addWidget(self.widget_2 )
@@ -177,22 +224,22 @@ class Ui_Dialog(QtWidgets.QWidget):
         # color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
         # self.menuItemsContainer.setStyleSheet("background-color: {}".format(color.name()))
 
-    def pictureDropped(self, l):
-        print(l)
-        for each in l :
-            self.plainTextEdit.setPlainText( self.plainTextEdit.toPlainText() + "\n" + each ) 
 
- 
+
+
     # trigger when window size is changed, updateing all responsive widgets 
     def responsive_init( self, event ) :  
 
         self.menuItemsContainer.setGeometry(QtCore.QRect(0, 0, self.widget.width(), 31)) 
         self.mainContentTab.setGeometry(QtCore.QRect( 0, 0, self.widget_2.width(), self.widget_2.height()))
-        self.inActionTab01.setGeometry(QtCore.QRect( 0, 0,  self.widget_2.width(), self.widget_2.height()  ))
-        
-        self.inTab01Layout.setGeometry(QtCore.QRect( 0, 0,  self.inActionTab01.width(), self.inActionTab01.height()  ))
-        self.plainTextEdit.setGeometry(QtCore.QRect( 0, -1,  self.inside_02.width(), self.inside_02.height()  ))
-        
+
+
+        try:
+            self.tab01.responsive_init( self, event )
+            self.tab02.responsive_init( self, event )
+        except Exception as e:
+            print( e )
+            pass
 
 
 
